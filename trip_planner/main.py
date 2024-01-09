@@ -4,9 +4,9 @@ from agents import ContentAgents
 from tasks import ContentTasks
 
 from google.colab import userdata
-openai_api_key = "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"
-SERP_API_KEY = "ecc7d445fb803a51d6a2c16f027f0cef45e01457ad348257072521424d0d217d"
-YOU_API_KEY = "e80d4720-af51-4145-bd57-18867d220c1e<__>1OWO11ETU8N2v5f4trtX69bl-PL49zmXP0geLfl"
+openai_api_key = ""
+SERP_API_KEY = ""
+YOU_API_KEY = ""
 
 
 from crewai import Crew

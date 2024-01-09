@@ -1,52 +1,56 @@
 from crewai import Crew
 from textwrap import dedent
-from trip_agents import TripAgents
-from trip_tasks import TripTasks
+from agents import ContentAgents
+from tasks import ContentTasks
 
-from dotenv import load_dotenv
-load_dotenv()
+from google.colab import userdata
+openai_api_key = "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"
+SERP_API_KEY = "ecc7d445fb803a51d6a2c16f027f0cef45e01457ad348257072521424d0d217d"
+YOU_API_KEY = "e80d4720-af51-4145-bd57-18867d220c1e<__>1OWO11ETU8N2v5f4trtX69bl-PL49zmXP0geLfl"
 
-class TripCrew:
 
-  def __init__(self, origin, cities, date_range, interests):
-    self.cities = cities
-    self.origin = origin
-    self.interests = interests
-    self.date_range = date_range
+from crewai import Crew
+from textwrap import dedent
+
+class ContentCrew:
+
+  def __init__(self, research_topic,scope):
+    self.research_topic = research_topic
+    self.scope = scope
+
+
 
   def run(self):
-    agents = TripAgents()
-    tasks = TripTasks()
+    agents = ContentAgents()
+    tasks = ContentTasks()
 
-    city_selector_agent = agents.city_selection_agent()
-    local_expert_agent = agents.local_expert()
-    travel_concierge_agent = agents.travel_concierge()
+    g_research_agent = agents.google_research_agent()  # or you_research_agent, based on your preference
+    y_research_agent = agents.you_research_agent()
 
-    identify_task = tasks.identify_task(
-      city_selector_agent,
-      self.origin,
-      self.cities,
-      self.interests,
-      self.date_range
+
+    get_google_research = tasks.google_research_task(
+      g_research_agent,
+      self.topic,
+      self.scope,
+
     )
-    gather_task = tasks.gather_task(
-      local_expert_agent,
-      self.origin,
-      self.interests,
-      self.date_range
+    get_you_research = tasks.you_research_task(
+      y_research_agent,
+      self.topic,
+      self.scope,
+
     )
-    plan_task = tasks.plan_task(
-      travel_concierge_agent, 
-      self.origin,
-      self.interests,
-      self.date_range
-    )
+
+
+
 
     crew = Crew(
       agents=[
-        city_selector_agent, local_expert_agent, travel_concierge_agent
+        research_agent, you_research_agent
       ],
-      tasks=[identify_task, gather_task, plan_task],
+      tasks=[
+        google_research_task,you_research_task
+      ],
       verbose=True
     )
 
@@ -54,28 +58,15 @@ class TripCrew:
     return result
 
 if __name__ == "__main__":
-  print("## Welcome to Trip Planner Crew")
+  print("## Welcome to the AI Content Crew")
   print('-------------------------------')
-  location = input(
-    dedent("""
-      From where will you be traveling from?
-    """))
-  cities = input(
-    dedent("""
-      What are the cities options you are interested in visiting?
-    """))
-  date_range = input(
-    dedent("""
-      What is the date range you are interested in traveling?
-    """))
-  interests = input(
-    dedent("""
-      What are some of your high level interests and hobbies?
-    """))
-  
-  trip_crew = TripCrew(location, cities, date_range, interests)
-  result = trip_crew.run()
+  query = "Matt Walsh Bigotry"
+  scope = "Large"
+
+  # Example initialization, replace with appropriate inputs
+  content_crew = ContentCrew(query,scope) 
+  result = content_crew.run()
   print("\n\n########################")
-  print("## Here is you Trip Plan")
+  print("## Here is your Content")
   print("########################\n")
   print(result)

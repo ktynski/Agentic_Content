@@ -7,6 +7,7 @@ from langchain.tools import tool
 from unstructured.partition.html import partition_html
 
 
+
 class BrowserTools():
 
   @tool("scrape_articles")
